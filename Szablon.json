@@ -1,0 +1,35 @@
+{"rozmowy":
+    [
+        {
+            "wypowiedz": ["redirected"],
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Tak, słucham</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Halo</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Tak?</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            ]
+        },
+        {
+            "wypowiedz": ["index"],
+            "odpowiedz": ["<Response><Say language=\"pl-PL\"></Say><Redirect>sameurl</Redirect></Response>"]
+        },
+        {
+            "wypowiedz": ["endcall","do widzenia","dowidzenia","dobranoc","dobrej nocy"],
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Do widzenia</Say></Response>",
+                "<Response><Say language=\"pl-PL\">Pa pa</Say></Response>",
+                "<Response><Say language=\"pl-PL\">Żegnam</Say></Response>"]
+        },
+        {
+            "wypowiedz": ["podtrzymaj"],
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Aha</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Aaa</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Czy mogę prosić o powtórzenie?</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Ok</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            ]
+        },
+        {
+            "wypowiedz": ["dzień dobry","dobry wieczór"],
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Witam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Dzień dobry</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            ]
+        }
+    ]
+}
