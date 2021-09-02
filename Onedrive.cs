@@ -118,7 +118,7 @@ namespace AntiTeleBot
             if (System.Environment.GetEnvironmentVariable("PushOverUserId") != "")
                     {
                         PushOverSender.SendPushMessage(System.Environment.GetEnvironmentVariable("PushOverUserId"),
-                            System.Environment.GetEnvironmentVariable("PushOverAppTokenId"), "AntiTeleBot", "Nowe nagranie na OneDrive");
+                            System.Environment.GetEnvironmentVariable("PushOverAppTokenId"), "AntiTeleBot", "Nowe nagranie na OneDrive od "+caller);
                     }
         }
     }
