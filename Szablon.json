@@ -30,6 +30,19 @@
             "odpowiedz": ["<Response><Say language=\"pl-PL\">Witam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
                 "<Response><Say language=\"pl-PL\">Dzień dobry</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
             ]
+        },
+        {
+            "wypowiedz": ["czy rozmawiam z"],
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Tak</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Oczywiście</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            ]
+        },
+        {
+            "wypowiedz": ["od kiedy","jak długo"],
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Od dawna</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Nie pamiętam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Bardzo długo/Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            ]
         }
     ]
 }
