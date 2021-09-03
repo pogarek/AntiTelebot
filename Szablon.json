@@ -22,7 +22,7 @@
             "odpowiedz": ["<Response><Say language=\"pl-PL\">Aha</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
                 "<Response><Say language=\"pl-PL\">Aaa</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
                 "<Response><Say language=\"pl-PL\">Czy mogę prosić o powtórzenie?</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Ok</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+                "<Response><Say language=\"pl-PL\">Okej</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
             ]
         },
         {
