@@ -43,7 +43,7 @@ namespace AntiTeleBot
             {
                 foreach (var rekord in Szablon) {
                     foreach (var rekord2 in rekord.wypowiedz) {
-                        if (rekord2.IndexOf(wypowiedz,StringComparison.InvariantCultureIgnoreCase)>=0) {
+                        if (rekord2.IndexOf(wypowiedz,StringComparison.InvariantCultureIgnoreCase)>=0 | wypowiedz.IndexOf(rekord2,StringComparison.InvariantCultureIgnoreCase)>=0) {
                             int RandomIndex =  (new Random()).Next(0, rekord.odpowiedz.Count);
                              result = rekord.odpowiedz[RandomIndex];
                              return result;
