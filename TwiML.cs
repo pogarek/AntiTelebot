@@ -39,14 +39,33 @@ namespace AntiTeleBot
         private static string GetRandomAnswerByPhrase(string wypowiedz)
         {
             string result = "";
+            var wypowiedz_split = wypowiedz.Split(" ", StringSplitOptions.RemoveEmptyEntries);
             if (wypowiedz.Length >= 5)
             {
-                foreach (var rekord in Szablon) {
-                    foreach (var rekord2 in rekord.wypowiedz) {
-                        if (rekord2.IndexOf(wypowiedz,StringComparison.InvariantCultureIgnoreCase)>=0 | wypowiedz.IndexOf(rekord2,StringComparison.InvariantCultureIgnoreCase)>=0) {
-                            int RandomIndex =  (new Random()).Next(0, rekord.odpowiedz.Count);
-                             result = rekord.odpowiedz[RandomIndex];
-                             return result;
+                foreach (var rekord in Szablon)
+                {
+                    foreach (var rekord2 in rekord.wypowiedz)
+                    {
+                        if (rekord2.IndexOf(wypowiedz, StringComparison.InvariantCultureIgnoreCase) >= 0 | wypowiedz.IndexOf(rekord2, StringComparison.InvariantCultureIgnoreCase) >= 0)
+                        {
+                            int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
+                            result = rekord.odpowiedz[RandomIndex];
+                            return result;
+                        }
+                    }
+                }
+                foreach (var rekord in Szablon)
+                {
+                    foreach (var rekord2 in rekord.wypowiedz)
+                    {
+                        for (int i = 0; i < wypowiedz_split.Count() - 2; i++)
+                        {
+                            if ( (wypowiedz_split[i]+" "+wypowiedz_split[i+1]+" "+wypowiedz_split[i+2]).IndexOf(rekord2, StringComparison.InvariantCultureIgnoreCase) >= 0)
+                            {
+                                int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
+                                result = rekord.odpowiedz[RandomIndex];
+                                return result;
+                            }
                         }
                     }
                 }
@@ -56,7 +75,7 @@ namespace AntiTeleBot
         [FunctionName("TwiML")]
         public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, ILogger log, ExecutionContext context)
         {
-            string szablonpath = context.FunctionAppDirectory + @"\"+System.Environment.GetEnvironmentVariable("ConversationTemplateFileName");
+            string szablonpath = context.FunctionAppDirectory + @"\" + System.Environment.GetEnvironmentVariable("ConversationTemplateFileName");
             Szablon = JsonSerializer.Deserialize<RRozmowy>(File.ReadAllText(szablonpath)).rozmowy;
 
             log.LogInformation("C# HTTP trigger function processed a request.");
@@ -109,10 +128,10 @@ namespace AntiTeleBot
                 SpeechResult = "index";
             }
             string responseMessage = "";
-           
+
 
             string CallStatus = "";
-            if (formValues.ContainsKey("CallStatus")) {CallStatus= formValues["CallStatus"].Trim(); }
+            if (formValues.ContainsKey("CallStatus")) { CallStatus = formValues["CallStatus"].Trim(); }
 
             if (SpeechResult == "index" & CallStatus == "in-progress")
             {

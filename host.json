@@ -6,6 +6,18 @@
             "samplingSettings": {
                 "isEnabled": true
             }
+        },
+        "fileLoggingMode": "always",
+        "logLevel": {
+            "default": "Information",
+            "Function.TwiML": "Warning",
+            "Function.TwiML.User": "Information",
+            "Host.Controllers.Host": "Warning",
+            "Host.Result": "Warning",
+            "Microsoft": "Warning"
         }
+    },
+    "console": {
+        "isEnabled": true
     }
 }

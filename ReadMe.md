@@ -1,7 +1,7 @@
 # Bot Anty-Telemarketer
 
 ## Aby go uruchomić potrzebujesz:
-* Płatne konto w Twilio.com . Polski numer telefonu (tylko komórkowe mają) kosztuje 3 USD miesięcznie.
+* Płatne konto w Twilio.com . Polski numer telefonu (tylko komórkowe mają) kosztuje 3 USD miesięcznie. Wymaga to przesłania do Twilio zdjęć polskiego dokumentu tożsamości. Bez potwierdzenia tego można dostać numer telefonu w Finlandi, za 1.5 USD miesięcznie, od ręki.
 * Azure Function : https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-csharp?tabs=in-process )
 ** TYLKO jeśli ten "program" ma być uruchomiony w chmurze
 * ~~Azure Cognitive Services (Free tier powinno dać radę) : https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/quickstarts/setup-platform?pivots=programming-language-csharp&tabs=dotnetcore%2Cwindows%2Cjre%2Cbrowser~~ w niedalekiej przyszłości to się przyda
