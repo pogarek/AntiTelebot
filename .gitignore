@@ -263,3 +263,5 @@ __pycache__/
 .vscode
 msalcache.bin3
 local.settings.json
+Szablon2.json
+mp3/
