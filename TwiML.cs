@@ -25,15 +25,6 @@ namespace AntiTeleBot
 {
     public static class AntiTeleBot
     {
-        private static Dictionary<string, string> szablony = new Dictionary<string, string> {
-            {"index",@"<Response><Say language=""pl-PL""></Say><Redirect>sameurl</Redirect></Response>"},
-            {"redirected",@"<Response><Say language=""pl-PL"">Tak, słucham</Say><Gather input=""speech"" language=""pl-PL"" speechTimeout=""1""/></Response>"},
-            {"endcall",@"<Response><Say language=""pl-PL"">Do widzenia</Say></Response>"},
-
-            {"dzień dobry",@"<Response><Say language=""pl-PL"">Witam</Say><Gather input=""speech"" language=""pl-PL"" speechTimeout=""1""/></Response>"},
-            {"aa",@"<Response><Say language=""pl-PL"">Tak, słucham</Say><Connect><Stream url=""wss://8e1a-94-172-120-60.ngrok.io/ws""></Stream></Connect></Response>"},
-            {"test kasia",@"<Response><Say language=""pl-PL"">Tak, słucham</Say><Connect><Stream url=""wss://8e1a-94-172-120-60.ngrok.io/ws""></Stream></Connect></Response>"}
-        };
         private static List<Rozmowy> Szablon;
 
         private static string GetRandomAnswerByPhrase(string wypowiedz)
@@ -146,12 +137,10 @@ namespace AntiTeleBot
                 var recording = RecordingResource.Create(pathCallSid: CallSid, recordingStatusCallback: fullurl);
             }
             responseMessage = GetRandomAnswerByPhrase(SpeechResult);
-            //if (szablony.Keys.Contains(SpeechResult)) { responseMessage = szablony[SpeechResult].ToString(); }
             responseMessage = responseMessage.Replace("sameurl", furl);
             if (responseMessage == "")
             {
                 responseMessage = GetRandomAnswerByPhrase("podtrzymaj");
-                //responseMessage = szablony["endcall"].ToString();
             }
             log.LogInformation(responseMessage);
 
