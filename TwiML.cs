@@ -122,9 +122,11 @@ namespace AntiTeleBot
 
 
             string CallStatus = "";
+            string msg = "";
             if (formValues.ContainsKey("CallStatus")) { CallStatus = formValues["CallStatus"].Trim(); }
-
-            if (SpeechResult == "index" & CallStatus == "in-progress")
+            if (formValues.ContainsKey("msg")) { msg = formValues["msg"].Trim(); }
+            if (msg !="") {SpeechResult = "";}
+            if (SpeechResult == "index" & CallStatus == "in-progress" & msg=="")
             {
                 //var s = req.IsHttps == true ? "https://" : "http://" + req.Host.Value + req.Path.Value + req.QueryString.Value;
                 var fullurl = new Uri(furl);
