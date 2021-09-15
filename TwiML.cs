@@ -107,13 +107,14 @@ namespace AntiTeleBot
                         partialText = "redirected";
                     }
                     string responseMessage2 = GetRandomAnswerByPhrase(partialText);
+                    if (responseMessage2 == "" & partialText.Length >= 60)  { responseMessage2 = GetRandomAnswerByPhrase("podtrzymaj"); }
                     if (responseMessage2 != "")
                     {
                         responseMessage2 = responseMessage2.Replace("sameurl", furl);
                         string AccountSid = formValues["AccountSid"].Trim();
                         string authToken = System.Environment.GetEnvironmentVariable("TwilioAuthToken");
                         string CallSid = formValues["CallSid"].Trim();
-                        log.LogInformation("partial twiml: "+ responseMessage2);
+                        log.LogInformation("partial twiml: " + responseMessage2);
                         try
                         {
                             TwilioClient.Init(AccountSid, authToken);
@@ -122,10 +123,11 @@ namespace AntiTeleBot
                                 pathSid: CallSid);
                         }
                         catch { }
-                        string b1 = "";
                     }
+                    string b1 = "";
                 }
-                return new EmptyResult();
+                //log.LogInformation("emty result");
+                return new NoContentResult();
             }
             //the call has ended, let's upload recording to Onedrive
             if (formValues.ContainsKey("RecordingUrl"))
