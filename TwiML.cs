@@ -69,6 +69,7 @@ namespace AntiTeleBot
             string szablonpath = context.FunctionAppDirectory + @"\" + System.Environment.GetEnvironmentVariable("ConversationTemplateFileName");
             Szablon = JsonSerializer.Deserialize<RRozmowy>(File.ReadAllText(szablonpath)).rozmowy;
 
+            //data initialization and collecting inputs from Twilio
             log.LogInformation("C# HTTP trigger function processed a request.");
             string furl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetEncodedUrl(req);
             var formValues = new Dictionary<string, string>();
@@ -90,6 +91,7 @@ namespace AntiTeleBot
             }
             catch { };
             var dict = req.GetQueryParameterDictionary();
+            //parsing partial speech result
             if (formValues.ContainsKey("UnstableSpeechResult") & Convert.ToBoolean(System.Environment.GetEnvironmentVariable("PartialSpeechRecognitionEnabled")))
             {
                 string partialText = formValues["UnstableSpeechResult"].Trim();
@@ -125,6 +127,7 @@ namespace AntiTeleBot
                 }
                 return new EmptyResult();
             }
+            //the call has ended, let's upload recording to Onedrive
             if (formValues.ContainsKey("RecordingUrl"))
             {
                 string caller = "nieznany";
@@ -144,24 +147,24 @@ namespace AntiTeleBot
             }
             //log.LogInformation(connection.Url);
             string SpeechResult = "";
+            //speech recognizion has completed
             if (formValues.ContainsKey("SpeechResult"))
             {
                 SpeechResult = formValues["SpeechResult"].Trim();
                 log.LogInformation("speachresult: " + SpeechResult);
             }
+            //if not let's assume that we are at the beginning of the call
             else
             {
                 SpeechResult = "index";
             }
             string responseMessage = "";
 
-
             string CallStatus = "";
-            string msg = "";
+            //let's check is the call is incoming or in-progress already
             if (formValues.ContainsKey("CallStatus")) { CallStatus = formValues["CallStatus"].Trim(); }
-            if (formValues.ContainsKey("msg")) { msg = formValues["msg"].Trim(); }
-            if (msg != "") { SpeechResult = ""; }
-            if (SpeechResult == "index" & CallStatus == "in-progress" & msg == "")
+            //if call is already in-progress we can start recording 
+            if (SpeechResult == "index" & CallStatus == "in-progress")
             {
                 //var s = req.IsHttps == true ? "https://" : "http://" + req.Host.Value + req.Path.Value + req.QueryString.Value;
                 var fullurl = new Uri(furl);
@@ -173,8 +176,11 @@ namespace AntiTeleBot
                 //log.LogInformation("proba nagrywania");
                 var recording = RecordingResource.Create(pathCallSid: CallSid, recordingStatusCallback: fullurl);
             }
+            //finding reply for spech result or redirecting to record or saying greetings
             responseMessage = GetRandomAnswerByPhrase(SpeechResult);
+            //in case we need to set url . THis must be dynamic becuase url is up to host runnign the code
             responseMessage = responseMessage.Replace("sameurl", furl);
+            // if no reply got matched from template, let's say/play something generic
             if (responseMessage == "")
             {
                 responseMessage = GetRandomAnswerByPhrase("podtrzymaj").Replace("sameurl", furl);
