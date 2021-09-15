@@ -96,6 +96,7 @@ namespace AntiTeleBot
             {
                 string partialText = formValues["UnstableSpeechResult"].Trim();
                 bool halocheck = false;
+                log.LogInformation("partial text:" + partialText);
                 if (partialText == "halo" | partialText.IndexOf("słychać", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     halocheck = true;
