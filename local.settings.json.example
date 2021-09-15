@@ -12,7 +12,9 @@
     "PushOverUserId" : "",
     "PushOverAppTokenId" : "",
     "TwilioAuthToken" : "",
-    "ConversationTemplateFileName" : "Szablon.json"
+    "ConversationTemplateFileName" : "Szablon.json",
+    "PartialSpeechRecognitionEnabled" : "true",
+    "PartialSpeechMinimumChars": "20"
   },
   "ConnectionStrings": {}
 }

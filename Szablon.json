@@ -2,9 +2,9 @@
     [
         {
             "wypowiedz": ["redirected"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Tak, słucham</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Halo</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Tak?</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Tak, słucham</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Halo</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Tak?</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
@@ -19,80 +19,80 @@
         },
         {
             "wypowiedz": ["podtrzymaj","poczekać"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Aha</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Aaa</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Czy mogę prosić o powtórzenie?</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Okej</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Aha</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Aaa</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Czy mogę prosić o powtórzenie?</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Okej</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
             "wypowiedz": ["słyszał","słyszała"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Nie pamiętam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Nie</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Czy mogę prosić o powtórzenie?</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Nigdy w życiu</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Nie pamiętam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Nie</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Czy mogę prosić o powtórzenie?</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Nigdy w życiu</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
             "wypowiedz": ["mieszkańcem","rozmawiam z","mają możliwość"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Jasne</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Oczywiście</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Tak</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Jak najbardziej</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Jasne</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Oczywiście</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Tak</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Jak najbardziej</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
             "wypowiedz": ["jaka kwota","ile płacicie","jaka opłata"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Nie pamiętam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Tyle ile trzeba</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Jest ok</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">10 złotych</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Ileś tam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Nie pamiętam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Tyle ile trzeba</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Jest ok</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">10 złotych</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Ileś tam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
             "wypowiedz": ["z kim mam przyjemność","podać imię i nazwisko","zapytać o imię i nazwisko","potrzebuję imię i nazwisko","imie nazwisko"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Grzegorz Brzęczyszczykiewicz</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Jarosław Kaczyński</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Sam swój</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Jerzy powyłamywany</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Grzegorz Brzęczyszczykiewicz</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Jarosław Kaczyński</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Sam swój</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Jerzy powyłamywany</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
             "wypowiedz": ["ma lat","w jakim wieku"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">10</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Dużo</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Oj, nieładnie o to pytać</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Tajemnica</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Nie chcę powiedzieć</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">10</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Dużo</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Oj, nieładnie o to pytać</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Tajemnica</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Nie chcę powiedzieć</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
             "wypowiedz": ["powtórzyć"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Tak</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Oczywiście</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Czemu nie</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Okej</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Tak</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Oczywiście</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Czemu nie</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Okej</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
             "wypowiedz": ["dzień dobry","dobry wieczór"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Witam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Dzień dobry</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Witam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Dzień dobry</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
             "wypowiedz": ["od kiedy","jak długo"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Od dawna</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Nie pamiętam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Bardzo długo</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Od dawna</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Nie pamiętam</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Bardzo długo</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         },
         {
             "wypowiedz": ["kurwa","pierdol","jebana","jebany","odpierdol","chuj","chuju","pierdolony","pierdolona","cipo","cipa"],
-            "odpowiedz": ["<Response><Say language=\"pl-PL\">Prosze się zachowywać</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Nie chcę rozmawiać w taki sposób</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>",
-                "<Response><Say language=\"pl-PL\">Zaraz się rozłączę</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"1\"/></Response>"
+            "odpowiedz": ["<Response><Say language=\"pl-PL\">Prosze się zachowywać</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Nie chcę rozmawiać w taki sposób</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>",
+                "<Response><Say language=\"pl-PL\">Zaraz się rozłączę</Say><Gather input=\"speech\" language=\"pl-PL\" speechTimeout=\"auto\"  partialResultCallback=\"sameurl\"/></Response>"
             ]
         }
     ]

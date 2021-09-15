@@ -51,7 +51,7 @@ namespace AntiTeleBot
                     {
                         for (int i = 0; i < wypowiedz_split.Count() - 2; i++)
                         {
-                            if ( (wypowiedz_split[i]+" "+wypowiedz_split[i+1]+" "+wypowiedz_split[i+2]).IndexOf(rekord2, StringComparison.InvariantCultureIgnoreCase) >= 0)
+                            if ((wypowiedz_split[i] + " " + wypowiedz_split[i + 1] + " " + wypowiedz_split[i + 2]).IndexOf(rekord2, StringComparison.InvariantCultureIgnoreCase) >= 0)
                             {
                                 int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
                                 result = rekord.odpowiedz[RandomIndex];
@@ -90,6 +90,36 @@ namespace AntiTeleBot
             }
             catch { };
             var dict = req.GetQueryParameterDictionary();
+            if (formValues.ContainsKey("UnstableSpeechResult") & Convert.ToBoolean(System.Environment.GetEnvironmentVariable("PartialSpeechRecognitionEnabled")))
+            {
+                string partialText = formValues["UnstableSpeechResult"].Trim();
+                bool halocheck = false;
+                if (partialText == "halo" |  partialText.IndexOf("słychać", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    halocheck = true;
+                }
+                if (partialText.Length >= Convert.ToInt32(System.Environment.GetEnvironmentVariable("PartialSpeechMinimumChars")) | halocheck)
+                {
+                    if (halocheck)
+                    {
+                        partialText = "redirected";
+                    }
+                    string responseMessage2 = GetRandomAnswerByPhrase(partialText);
+                    if (responseMessage2 != "")
+                    {
+                        responseMessage2 = responseMessage2.Replace("sameurl", furl);
+                        string AccountSid = formValues["AccountSid"].Trim();
+                        string authToken = System.Environment.GetEnvironmentVariable("TwilioAuthToken");
+                        string CallSid = formValues["CallSid"].Trim();
+                        TwilioClient.Init(AccountSid, authToken);
+                        var call = Twilio.Rest.Api.V2010.Account.CallResource.Update(
+                            twiml: responseMessage2,
+                            pathSid: CallSid);
+                        string b1 = "";
+                    }
+                }
+                return new ContentResult { Content = "", ContentType = "text/plain" };
+            }
             if (formValues.ContainsKey("RecordingUrl"))
             {
                 string caller = "nieznany";
@@ -125,8 +155,8 @@ namespace AntiTeleBot
             string msg = "";
             if (formValues.ContainsKey("CallStatus")) { CallStatus = formValues["CallStatus"].Trim(); }
             if (formValues.ContainsKey("msg")) { msg = formValues["msg"].Trim(); }
-            if (msg !="") {SpeechResult = "";}
-            if (SpeechResult == "index" & CallStatus == "in-progress" & msg=="")
+            if (msg != "") { SpeechResult = ""; }
+            if (SpeechResult == "index" & CallStatus == "in-progress" & msg == "")
             {
                 //var s = req.IsHttps == true ? "https://" : "http://" + req.Host.Value + req.Path.Value + req.QueryString.Value;
                 var fullurl = new Uri(furl);
