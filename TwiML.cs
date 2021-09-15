@@ -94,7 +94,7 @@ namespace AntiTeleBot
             {
                 string partialText = formValues["UnstableSpeechResult"].Trim();
                 bool halocheck = false;
-                if (partialText == "halo" |  partialText.IndexOf("słychać", StringComparison.OrdinalIgnoreCase) >= 0)
+                if (partialText == "halo" | partialText.IndexOf("słychać", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     halocheck = true;
                 }
@@ -111,14 +111,19 @@ namespace AntiTeleBot
                         string AccountSid = formValues["AccountSid"].Trim();
                         string authToken = System.Environment.GetEnvironmentVariable("TwilioAuthToken");
                         string CallSid = formValues["CallSid"].Trim();
-                        TwilioClient.Init(AccountSid, authToken);
-                        var call = Twilio.Rest.Api.V2010.Account.CallResource.Update(
-                            twiml: responseMessage2,
-                            pathSid: CallSid);
+                        log.LogInformation("partial twiml: "+ responseMessage2);
+                        try
+                        {
+                            TwilioClient.Init(AccountSid, authToken);
+                            var call = Twilio.Rest.Api.V2010.Account.CallResource.Update(
+                                twiml: responseMessage2,
+                                pathSid: CallSid);
+                        }
+                        catch { }
                         string b1 = "";
                     }
                 }
-                return new ContentResult { Content = "", ContentType = "text/plain" };
+                return new EmptyResult();
             }
             if (formValues.ContainsKey("RecordingUrl"))
             {
@@ -172,7 +177,7 @@ namespace AntiTeleBot
             responseMessage = responseMessage.Replace("sameurl", furl);
             if (responseMessage == "")
             {
-                responseMessage = GetRandomAnswerByPhrase("podtrzymaj");
+                responseMessage = GetRandomAnswerByPhrase("podtrzymaj").Replace("sameurl", furl);
             }
             log.LogInformation(responseMessage);
 
