@@ -94,13 +94,18 @@ namespace AntiTeleBot
             //parsing partial speech result
             if (formValues.ContainsKey("UnstableSpeechResult") & Convert.ToBoolean(System.Environment.GetEnvironmentVariable("PartialSpeechRecognitionEnabled")))
             {
-                string partialText = formValues["UnstableSpeechResult"].Trim();
+                string partialText = formValues["UnstableSpeechResult"].Trim().ToLower();
                 bool halocheck = false;
                 log.LogInformation("partial text:" + partialText);
-                if (partialText == "halo" | partialText.IndexOf("słychać", StringComparison.OrdinalIgnoreCase) >= 0)
+                var PartialHaloCheckWords = Szablon.Where(s2 => s2.wypowiedz.Contains("redirected")).Select(s => s.wypowiedz).FirstOrDefault();
+                if (PartialHaloCheckWords.Contains(partialText))
                 {
                     halocheck = true;
                 }
+                /*if (partialText == "halo" | partialText.IndexOf("słychać", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    halocheck = true;
+                }*/
                 if (partialText.Length >= Convert.ToInt32(System.Environment.GetEnvironmentVariable("PartialSpeechMinimumChars")) | halocheck)
                 {
                     if (halocheck)
@@ -108,7 +113,10 @@ namespace AntiTeleBot
                         partialText = "redirected";
                     }
                     string responseMessage2 = GetRandomAnswerByPhrase(partialText);
-                    if (responseMessage2 == "" & partialText.Length >= 60)  { responseMessage2 = GetRandomAnswerByPhrase("podtrzymaj"); }
+                    if (responseMessage2 == "" & partialText.Length >= Convert.ToInt32(System.Environment.GetEnvironmentVariable("SaySomethingWhenPartialSpeechLongerThanChars")))
+                    {
+                        responseMessage2 = GetRandomAnswerByPhrase(System.Environment.GetEnvironmentVariable("KeepConversationKeyWord"));
+                    }
                     if (responseMessage2 != "")
                     {
                         responseMessage2 = responseMessage2.Replace("sameurl", furl);
@@ -133,7 +141,7 @@ namespace AntiTeleBot
             //the call has ended, let's upload recording to Onedrive
             if (formValues.ContainsKey("RecordingUrl"))
             {
-                string caller = "nieznany";
+                string caller = "unknown";
                 if (formValues.ContainsKey("Caller")) { caller = formValues["Caller"].Trim(); }
 
                 string AccountSid = formValues["AccountSid"].Trim();
@@ -141,7 +149,7 @@ namespace AntiTeleBot
                 string CallSid = formValues["CallSid"].Trim();
                 TwilioClient.Init(AccountSid, authToken);
                 var call = Twilio.Rest.Api.V2010.Account.CallResource.Fetch(pathSid: CallSid);
-                if (caller == "nieznany")
+                if (caller == "unknown")
                 {
                     caller = call.From;
                 }
@@ -186,7 +194,7 @@ namespace AntiTeleBot
             // if no reply got matched from template, let's say/play something generic
             if (responseMessage == "")
             {
-                responseMessage = GetRandomAnswerByPhrase("podtrzymaj").Replace("sameurl", furl);
+                responseMessage = GetRandomAnswerByPhrase(System.Environment.GetEnvironmentVariable("KeepConversationKeyWord")).Replace("sameurl", furl);
             }
             log.LogInformation(responseMessage);
 

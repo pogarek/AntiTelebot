@@ -14,7 +14,9 @@
     "TwilioAuthToken" : "",
     "ConversationTemplateFileName" : "Szablon.json",
     "PartialSpeechRecognitionEnabled" : "true",
-    "PartialSpeechMinimumChars": "20"
+    "PartialSpeechMinimumChars": "20",
+    "SaySomethingWhenPartialSpeechLongerThanChars": "80",
+    "KeepConversationKeyWord" : "podtrzymaj"
   },
   "ConnectionStrings": {}
 }
