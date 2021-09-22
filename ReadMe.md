@@ -22,6 +22,10 @@ W przypadku wdrożenia w Azure Functions, dodaj te wpisy w sekcji Configuration 
 * PushOverAppTokenId - dane z PushOver , jeśli chcesz mieć powiadomienia o nowym nagraniu lub wygaśnięciu tokena dostępowego do Onedrive
 * TwilioAuthToken - Twój osobisty token dostepowy z Twilio
 * ConversationTemplateFileName - nazwa pliku szablonami wypowiedzi/odpowiedz
+* PartialSpeechRecognitionEnabled - nie czekamy na koniec wypowiedzi telemarketera, tylko szukamy słów kluczowych wcześniej
+* PartialSpeechMinimumChars - ile znaków musi być aby zrobić częsciowe rozpoznanie mowy
+* SaySomethingWhenPartialSpeechLongerThanChars - gdy wypowiedź jest za długa to potrzymaj rozmowe
+* KeepConversationKeyWord - który zestaw wypowiedzi używaj do podtrzymania rozmowy
 
 Może też przydać się ngrok (https://ngrok.com/) . Łatwa i darmowa metoda na bezpieczny tuner dający dostęp z świata w czasie uruchomienia ngroka, na jeden port na naszym komputerze .
 
