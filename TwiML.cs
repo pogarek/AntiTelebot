@@ -28,16 +28,16 @@ namespace AntiTeleBot
         private static List<Rozmowy> Szablon;
         private static string Fulllogfilename = "";
         private static ILogger log;
-        private static void LogString(string text)
+        private static async Task LogString(string text)
         {
-            text = $"{DateTime.Now.ToString("s")} {text}";
+            text = $"{DateTime.UtcNow.ToString("s")} {text}";
             log.LogInformation(text);
             bool written = false;
             do
             {
                 try
                 {
-                    File.AppendAllText(Fulllogfilename, text + System.Environment.NewLine);
+                    await File.AppendAllTextAsync(Fulllogfilename, text + System.Environment.NewLine);
                     //log.LogInformation("appended");
                     written = true;
                 }
@@ -49,7 +49,7 @@ namespace AntiTeleBot
 
         }
 
-        private static string GetRandomAnswerByPhrase(string wypowiedz)
+        private static async Task<string> GetRandomAnswerByPhrase(string wypowiedz)
         {
             string result = "";
             var wypowiedz_split = wypowiedz.Split(" ", StringSplitOptions.RemoveEmptyEntries);
@@ -63,7 +63,7 @@ namespace AntiTeleBot
                         {
                             int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
                             result = rekord.odpowiedz[RandomIndex];
-                            LogString($"matching phrase1: {wypowiedz}");
+                            await LogString($"matching phrase1: {wypowiedz}");
                             return result;
                         }
                     }
@@ -78,7 +78,7 @@ namespace AntiTeleBot
                             {
                                 int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
                                 result = rekord.odpowiedz[RandomIndex];
-                                LogString($"matching phrase2: {wypowiedz_split[i]}");
+                                await LogString($"matching phrase2: {wypowiedz_split[i]} {wypowiedz_split[i+1]} {wypowiedz_split[i+2]}");
                                 return result;
                             }
                         }
@@ -118,17 +118,14 @@ namespace AntiTeleBot
             catch { };
             var dict = req.GetQueryParameterDictionary();
             Fulllogfilename = @$"{System.IO.Path.GetTempPath()}\{formValues["CallSid"].Trim()}.txt";
-            if (!System.IO.File.Exists(Fulllogfilename))
-            {
-                File.WriteAllText(Fulllogfilename, "");
-            }
-
+            Fulllogfilename = @$"{context.FunctionAppDirectory}\{formValues["CallSid"].Trim()}.txt";
+            
             //parsing partial speech result
             if (formValues.ContainsKey("UnstableSpeechResult") & Convert.ToBoolean(System.Environment.GetEnvironmentVariable("PartialSpeechRecognitionEnabled")))
             {
                 string partialText = formValues["UnstableSpeechResult"].Trim().ToLower();
                 bool halocheck = false;
-                LogString("partial text:" + partialText);
+                await LogString("partial text:" + partialText);
                 var PartialHaloCheckWords = Szablon.Where(s2 => s2.wypowiedz.Contains("redirected")).Select(s => s.wypowiedz).FirstOrDefault();
                 if (PartialHaloCheckWords.Contains(partialText))
                 {
@@ -144,11 +141,11 @@ namespace AntiTeleBot
                     {
                         partialText = "redirected";
                     }
-                    string responseMessage2 = GetRandomAnswerByPhrase(partialText);
+                    string responseMessage2 = await GetRandomAnswerByPhrase(partialText);
                     //podtrzymanie rozmowy
                     if (responseMessage2 == "" & partialText.Length >= Convert.ToInt32(System.Environment.GetEnvironmentVariable("SaySomethingWhenPartialSpeechLongerThanChars")))
                     {
-                        responseMessage2 = GetRandomAnswerByPhrase(System.Environment.GetEnvironmentVariable("KeepConversationKeyWord"));
+                        responseMessage2 = await GetRandomAnswerByPhrase(System.Environment.GetEnvironmentVariable("KeepConversationKeyWord"));
                     }
                     if (responseMessage2 != "")
                     {
@@ -156,7 +153,7 @@ namespace AntiTeleBot
                         string AccountSid = formValues["AccountSid"].Trim();
                         string authToken = System.Environment.GetEnvironmentVariable("TwilioAuthToken");
                         string CallSid = formValues["CallSid"].Trim();
-                        LogString("partial twiml: " + responseMessage2);
+                        await LogString("partial twiml: " + responseMessage2);
                         try
                         {
                             TwilioClient.Init(AccountSid, authToken);
@@ -186,7 +183,12 @@ namespace AntiTeleBot
                 {
                     caller = call.From;
                 }
+                System.Threading.Thread.Sleep(500);
+                /* try {
+                    System.IO.File.Copy(Fulllogfilename,@$"{context.FunctionAppDirectory}\{formValues["CallSid"].Trim()}.txt");
+                } catch {} */
                 await Onedrive.UploadFileToOnedrive(log, formValues["RecordingUrl"].Trim(), caller, Fulllogfilename);
+                System.IO.File.Delete(Fulllogfilename);
                 return new OkObjectResult("");
             }
             //log.LogInformation(connection.Url);
@@ -195,7 +197,7 @@ namespace AntiTeleBot
             if (formValues.ContainsKey("SpeechResult"))
             {
                 SpeechResult = formValues["SpeechResult"].Trim();
-                LogString("speachresult: " + SpeechResult);
+                await LogString("speachresult: " + SpeechResult);
             }
             //if not let's assume that we are at the beginning of the call
             else
@@ -221,15 +223,15 @@ namespace AntiTeleBot
                 var recording = RecordingResource.Create(pathCallSid: CallSid, recordingStatusCallback: fullurl);
             }
             //finding reply for spech result or redirecting to record or saying greetings
-            responseMessage = GetRandomAnswerByPhrase(SpeechResult);
+            responseMessage = await GetRandomAnswerByPhrase(SpeechResult);
             //in case we need to set url . THis must be dynamic becuase url is up to host runnign the code
             responseMessage = responseMessage.Replace("sameurl", furl);
             // if no reply got matched from template, let's say/play something generic
             if (responseMessage == "")
             {
-                responseMessage = GetRandomAnswerByPhrase(System.Environment.GetEnvironmentVariable("KeepConversationKeyWord")).Replace("sameurl", furl);
+                responseMessage = (await GetRandomAnswerByPhrase(System.Environment.GetEnvironmentVariable("KeepConversationKeyWord"))).Replace("sameurl", furl);
             }
-            LogString(responseMessage);
+            await LogString(responseMessage);
 
             return new ContentResult { Content = responseMessage, ContentType = "text/xml" };
         }
