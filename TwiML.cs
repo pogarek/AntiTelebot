@@ -38,12 +38,12 @@ namespace AntiTeleBot
                 try
                 {
                     File.AppendAllText(Fulllogfilename, text + System.Environment.NewLine);
-                    log.LogInformation("appended");
+                    //log.LogInformation("appended");
                     written = true;
                 }
                 catch
                 {
-                    log.LogInformation("exception");
+                    //log.LogInformation("exception");
                 }
             } while (!written);
 
