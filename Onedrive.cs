@@ -48,7 +48,7 @@ namespace AntiTeleBot
             return result;
         }
 
-        public static async Task UploadFileToOnedrive(ILogger logger, string recordingUrl, string caller)
+        public static async Task UploadFileToOnedrive(ILogger logger, string recordingUrl, string caller, string LogFullFileName)
         {
             log = logger;
             recordingUrl = recordingUrl + ".mp3";
@@ -115,6 +115,12 @@ namespace AntiTeleBot
             //using var stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(@"The contents of the file goes here."));
             //var stream = new System.IO.FileStream(@"C:\_MY_DATA_\GIT_REPOS\a.json", System.IO.FileMode.Open);
             await graphClient.Me.Drive.Items[folder.Id].ItemWithPath(filename).Content.Request().PutAsync<DriveItem>(streamToReadFrom);
+             log.LogInformation($"log location: {LogFullFileName}");
+            string newlogfilename = filename.Replace(".mp3",".txt");
+            Stream streamLogFile  = System.IO.File.OpenRead(LogFullFileName);
+            //System.IO.File.Move(LogFullFileName,@$"{System.IO.Path.GetTempPath()}\{newlogfilename}" );
+            
+            await graphClient.Me.Drive.Items[folder.Id].ItemWithPath(newlogfilename).Content.Request().PutAsync<DriveItem>(streamLogFile);
             if (System.Environment.GetEnvironmentVariable("PushOverUserId") != "")
                     {
                         PushOverSender.SendPushMessage(System.Environment.GetEnvironmentVariable("PushOverUserId"),

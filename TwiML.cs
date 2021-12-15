@@ -26,6 +26,28 @@ namespace AntiTeleBot
     public static class AntiTeleBot
     {
         private static List<Rozmowy> Szablon;
+        private static string Fulllogfilename = "";
+        private static ILogger log;
+        private static void LogString(string text)
+        {
+            text = $"{DateTime.Now.ToString("s")} {text}";
+            log.LogInformation(text);
+            bool written = false;
+            do
+            {
+                try
+                {
+                    File.AppendAllText(Fulllogfilename, text + System.Environment.NewLine);
+                    log.LogInformation("appended");
+                    written = true;
+                }
+                catch
+                {
+                    log.LogInformation("exception");
+                }
+            } while (!written);
+
+        }
 
         private static string GetRandomAnswerByPhrase(string wypowiedz)
         {
@@ -41,6 +63,7 @@ namespace AntiTeleBot
                         {
                             int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
                             result = rekord.odpowiedz[RandomIndex];
+                            LogString($"matching phrase: {wypowiedz}");
                             return result;
                         }
                     }
@@ -55,6 +78,7 @@ namespace AntiTeleBot
                             {
                                 int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
                                 result = rekord.odpowiedz[RandomIndex];
+                                LogString($"matching phrase: {wypowiedz}");
                                 return result;
                             }
                         }
@@ -64,9 +88,11 @@ namespace AntiTeleBot
             return result;
         }
         [FunctionName("TwiML")]
-        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, ILogger log, ExecutionContext context)
+        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, ILogger log2, ExecutionContext context)
         {
+            log = log2;
             string szablonpath = context.FunctionAppDirectory + @"\" + System.Environment.GetEnvironmentVariable("ConversationTemplateFileName");
+
             Szablon = JsonSerializer.Deserialize<RRozmowy>(File.ReadAllText(szablonpath)).rozmowy;
 
             //data initialization and collecting inputs from Twilio
@@ -91,12 +117,18 @@ namespace AntiTeleBot
             }
             catch { };
             var dict = req.GetQueryParameterDictionary();
+            Fulllogfilename = @$"{System.IO.Path.GetTempPath()}\{formValues["CallSid"].Trim()}.txt";
+            if (!System.IO.File.Exists(Fulllogfilename))
+            {
+                File.WriteAllText(Fulllogfilename, "");
+            }
+
             //parsing partial speech result
             if (formValues.ContainsKey("UnstableSpeechResult") & Convert.ToBoolean(System.Environment.GetEnvironmentVariable("PartialSpeechRecognitionEnabled")))
             {
                 string partialText = formValues["UnstableSpeechResult"].Trim().ToLower();
                 bool halocheck = false;
-                log.LogInformation("partial text:" + partialText);
+                LogString("partial text:" + partialText);
                 var PartialHaloCheckWords = Szablon.Where(s2 => s2.wypowiedz.Contains("redirected")).Select(s => s.wypowiedz).FirstOrDefault();
                 if (PartialHaloCheckWords.Contains(partialText))
                 {
@@ -113,6 +145,7 @@ namespace AntiTeleBot
                         partialText = "redirected";
                     }
                     string responseMessage2 = GetRandomAnswerByPhrase(partialText);
+                    //podtrzymanie rozmowy
                     if (responseMessage2 == "" & partialText.Length >= Convert.ToInt32(System.Environment.GetEnvironmentVariable("SaySomethingWhenPartialSpeechLongerThanChars")))
                     {
                         responseMessage2 = GetRandomAnswerByPhrase(System.Environment.GetEnvironmentVariable("KeepConversationKeyWord"));
@@ -123,7 +156,7 @@ namespace AntiTeleBot
                         string AccountSid = formValues["AccountSid"].Trim();
                         string authToken = System.Environment.GetEnvironmentVariable("TwilioAuthToken");
                         string CallSid = formValues["CallSid"].Trim();
-                        log.LogInformation("partial twiml: " + responseMessage2);
+                        LogString("partial twiml: " + responseMessage2);
                         try
                         {
                             TwilioClient.Init(AccountSid, authToken);
@@ -153,7 +186,7 @@ namespace AntiTeleBot
                 {
                     caller = call.From;
                 }
-                await Onedrive.UploadFileToOnedrive(log, formValues["RecordingUrl"].Trim(), caller);
+                await Onedrive.UploadFileToOnedrive(log, formValues["RecordingUrl"].Trim(), caller, Fulllogfilename);
                 return new OkObjectResult("");
             }
             //log.LogInformation(connection.Url);
@@ -162,7 +195,7 @@ namespace AntiTeleBot
             if (formValues.ContainsKey("SpeechResult"))
             {
                 SpeechResult = formValues["SpeechResult"].Trim();
-                log.LogInformation("speachresult: " + SpeechResult);
+                LogString("speachresult: " + SpeechResult);
             }
             //if not let's assume that we are at the beginning of the call
             else
@@ -196,7 +229,7 @@ namespace AntiTeleBot
             {
                 responseMessage = GetRandomAnswerByPhrase(System.Environment.GetEnvironmentVariable("KeepConversationKeyWord")).Replace("sameurl", furl);
             }
-            log.LogInformation(responseMessage);
+            LogString(responseMessage);
 
             return new ContentResult { Content = responseMessage, ContentType = "text/xml" };
         }
