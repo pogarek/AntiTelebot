@@ -63,7 +63,7 @@ namespace AntiTeleBot
                         {
                             int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
                             result = rekord.odpowiedz[RandomIndex];
-                            await LogString($"matching phrase1: {wypowiedz}  Keyword: {rekord2}");
+                            await LogString($"matching phrase1: {wypowiedz}  Keyphrase: {rekord2}");
                             return result;
                         }
                     }
@@ -78,7 +78,7 @@ namespace AntiTeleBot
                             {
                                 int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
                                 result = rekord.odpowiedz[RandomIndex];
-                                await LogString($"matching phrase2: {wypowiedz_split[i]} {wypowiedz_split[i+1]} {wypowiedz_split[i+2]} Keyword: {rekord2} ");
+                                await LogString($"matching phrase2: {wypowiedz_split[i]} {wypowiedz_split[i+1]} {wypowiedz_split[i+2]} Keyphrase: {rekord2} ");
                                 return result;
                             }
                         }
