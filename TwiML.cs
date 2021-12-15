@@ -78,7 +78,7 @@ namespace AntiTeleBot
                             {
                                 int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
                                 result = rekord.odpowiedz[RandomIndex];
-                                LogString($"matching phrase: {wypowiedz}");
+                                LogString($"matching phrase: {wypowiedz_split[i]}");
                                 return result;
                             }
                         }
