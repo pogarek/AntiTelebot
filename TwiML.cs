@@ -1,11 +1,15 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Text.Encodings;
+using System.Text;
+using System.Collections.Generic;
+using System.Linq;
+//using Newtonsoft.Json;
+using Microsoft.Azure.Functions.Worker;
 using System.Text.Json;
 using System.Linq;
 using Microsoft.CognitiveServices.Speech;
@@ -19,16 +23,26 @@ using RestSharp;
 using Twilio.Rest.Api.V2010.Account.Call;
 using Twilio.TwiML;
 using Twilio;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.Extensions;
+using System.Xml.Linq;
 
 
 namespace AntiTeleBot
 {
-    public static class AntiTeleBot
+    public class AntiTeleBot
     {
+        private readonly ILogger log;
+        public AntiTeleBot(ILogger<AntiTeleBot> logger)
+        {
+            log = logger;
+        }
         private static List<Rozmowy> Szablon;
         private static string Fulllogfilename = "";
-        private static ILogger log;
-        private static async Task LogString(string text)
+        //private static ILogger log = new Logger();
+
+        private async Task LogString(string text)
         {
             text = $"{DateTime.UtcNow.ToString("s")} {text}";
             log.LogInformation(text);
@@ -49,7 +63,7 @@ namespace AntiTeleBot
 
         }
 
-        private static async Task<string> GetRandomAnswerByPhrase(string wypowiedz)
+        private async Task<string> GetRandomAnswerByPhrase(string wypowiedz)
         {
             string result = "";
             var wypowiedz_split = wypowiedz.Split(" ", StringSplitOptions.RemoveEmptyEntries);
@@ -78,7 +92,7 @@ namespace AntiTeleBot
                             {
                                 int RandomIndex = (new Random()).Next(0, rekord.odpowiedz.Count);
                                 result = rekord.odpowiedz[RandomIndex];
-                                await LogString($"matching phrase2: {wypowiedz_split[i]} {wypowiedz_split[i+1]} {wypowiedz_split[i+2]} Keyphrase: {rekord2} ");
+                                await LogString($"matching phrase2: {wypowiedz_split[i]} {wypowiedz_split[i + 1]} {wypowiedz_split[i + 2]} Keyphrase: {rekord2} ");
                                 return result;
                             }
                         }
@@ -87,23 +101,48 @@ namespace AntiTeleBot
             }
             return result;
         }
-        [FunctionName("TwiML")]
-        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, ILogger log2, ExecutionContext context)
-        {
-            log = log2;
-            string szablonpath = context.FunctionAppDirectory + @"\" + System.Environment.GetEnvironmentVariable("ConversationTemplateFileName");
+        [Function("TwiML")]
 
-            Szablon = JsonSerializer.Deserialize<RRozmowy>(File.ReadAllText(szablonpath)).rozmowy;
+
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, ExecutionContext context)
+        {
+            //log = log2;
+            string FunctionAppDirectory = System.Environment.GetEnvironmentVariable("AzureWebJobsScriptRoot");
+            string separator = System.IO.Path.DirectorySeparatorChar.ToString();
+            if (FunctionAppDirectory == null)
+            {
+                FunctionAppDirectory = System.Environment.GetEnvironmentVariable("HOME") + $"{separator}site{separator}wwwroot";
+            }
+
+            string szablonpath = FunctionAppDirectory + separator + System.Environment.GetEnvironmentVariable("ConversationTemplateFileName");
+
+            Szablon = System.Text.Json.JsonSerializer.Deserialize<RRozmowy>(File.ReadAllText(szablonpath)).rozmowy;
 
             //data initialization and collecting inputs from Twilio
             log.LogInformation("C# HTTP trigger function processed a request.");
             string furl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetEncodedUrl(req);
+             var node = new XElement("node");
+            node.Value = furl ?? node.Value;
+            furl = node.ToString().Replace("<node>","").Replace("</node>",""); 
+
+            //furl = furl.Replace(req.QueryString.ToString(),System.Web.HttpUtility.UrlEncode(req.QueryString.ToString()));
+            //furl = furl.Replace(req.Query["Code"], System.Web.HttpUtility.UrlEncode(req.Query["Code"]));
             var formValues = new Dictionary<string, string>();
+            //if (req.Method == "GET")
+            //{
+                //furl = furl.Replace(req.Query["Code"], $"{req.Query["Code"]};");
+            //}
+
             try
             {
 
-                var data = (new StreamReader(req.Body)).ReadToEnd();
-                formValues = data.Split('&')
+                var data = await (new StreamReader(req.Body)).ReadToEndAsync();
+                //log.LogInformation($"req body: {data}");
+                if (data.Length == 0)
+                {
+                    data = req.QueryString.ToString();
+                }
+                formValues = data.Split('&').Distinct()
                     .Select(value => value.Split('='))
                     .ToDictionary(pair => Uri.UnescapeDataString(pair[0]).Replace("+", " "),
                                   pair => Uri.UnescapeDataString(pair[1]).Replace("+", " "));
@@ -114,12 +153,13 @@ namespace AntiTeleBot
                     .Replace("+", "")
                     .Aggregate(string.Empty, (c, i) => c + i + ' ')
                     .Trim();
+
             }
             catch { };
-            var dict = req.GetQueryParameterDictionary();
-            Fulllogfilename = @$"{System.IO.Path.GetTempPath()}\{formValues["CallSid"].Trim()}.txt";
-            Fulllogfilename = @$"{context.FunctionAppDirectory}\{formValues["CallSid"].Trim()}.txt";
-            
+            //var dict = req.GetQueryParameterDictionary();
+            Fulllogfilename = @$"{System.IO.Path.GetTempPath()}{separator}{formValues["CallSid"].Trim()}.txt";
+            Fulllogfilename = @$"{FunctionAppDirectory}{separator}{formValues["CallSid"].Trim()}.txt";
+
             //parsing partial speech result
             if (formValues.ContainsKey("UnstableSpeechResult") & Convert.ToBoolean(System.Environment.GetEnvironmentVariable("PartialSpeechRecognitionEnabled")))
             {
@@ -200,9 +240,12 @@ namespace AntiTeleBot
                 await LogString("speachresult: " + SpeechResult);
             }
             //if not let's assume that we are at the beginning of the call
+            if (formValues.ContainsKey("CallToken")) {
+                SpeechResult = "index";
+            }
             else
             {
-                SpeechResult = "index";
+                SpeechResult ="redirected";
             }
             string responseMessage = "";
 
@@ -210,7 +253,7 @@ namespace AntiTeleBot
             //let's check is the call is incoming or in-progress already
             if (formValues.ContainsKey("CallStatus")) { CallStatus = formValues["CallStatus"].Trim(); }
             //if call is already in-progress we can start recording 
-            if (SpeechResult == "index" & CallStatus == "in-progress")
+            if (SpeechResult == "redirected" & (CallStatus == "in-progress" ) )
             {
                 //var s = req.IsHttps == true ? "https://" : "http://" + req.Host.Value + req.Path.Value + req.QueryString.Value;
                 var fullurl = new Uri(furl);
@@ -235,6 +278,7 @@ namespace AntiTeleBot
 
             return new ContentResult { Content = responseMessage, ContentType = "text/xml" };
         }
+
     }
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
     public class Rozmowy

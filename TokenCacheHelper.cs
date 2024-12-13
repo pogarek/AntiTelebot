@@ -4,9 +4,9 @@ using Microsoft.Identity.Client;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
+/* using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Azure.WebJobs.Host; */
 using Azure.Storage.Blobs;
 using System.Linq;
 

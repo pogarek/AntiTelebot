@@ -260,10 +260,12 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-.vscode
+
 msalcache.bin3
 local.settings.json
 Szablon2.json
 Szablon3.json
 mp3/
 bak/
+__azurite_*.*
+__blobstorage__

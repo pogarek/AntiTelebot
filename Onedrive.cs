@@ -14,9 +14,25 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using PushOver;
+using Microsoft.Kiota.Abstractions.Authentication;
 
 namespace AntiTeleBot
 {
+
+    public class TokenProvider : IAccessTokenProvider
+    {
+        public Task<string> GetAuthorizationTokenAsync(Uri uri, Dictionary<string, object> additionalAuthenticationContext = default,
+            CancellationToken cancellationToken = default)
+        {
+            //var token = "token";
+            // get the token and return it
+            return Task.FromResult(token);
+        }
+
+        public AllowedHostsValidator AllowedHostsValidator { get; }
+
+        public string token = "";
+    }
     public static class Onedrive
     {
         public static string clientId;
@@ -60,18 +76,28 @@ namespace AntiTeleBot
                     .WithAuthority(Authority)
                     .WithDefaultRedirectUri()
                     .Build();
-            TokenCacheHelper.EnableSerialization(pca.UserTokenCache,log);
-            var accounts = await pca.GetAccountsAsync();
-            GraphServiceClient graphClient = new GraphServiceClient(authenticationProvider: null);
+            TokenCacheHelper.EnableSerialization(pca.UserTokenCache, log);
+            GraphServiceClient graphClient  = null;
             try
             {
-                graphClient.AuthenticationProvider = new DelegateAuthenticationProvider(async (request) =>
+                var accounts = await pca.GetAccountsAsync();
+                var tokenProvider = new TokenProvider();
+                var account = await pca.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
+                tokenProvider.token = account.AccessToken;
+                token = account.AccessToken;
+                var authenticationProvider = new BaseBearerTokenAuthenticationProvider(tokenProvider);
+                graphClient = new GraphServiceClient(authenticationProvider);
+
+                //graphClient.auth
+
+                /* graphClient.AuthenticationProvider = new DelegateAuthenticationProvider(async (request) =>
                 {
-                    token = pca.AcquireTokenSilent(scopes,accounts.FirstOrDefault()).ExecuteAsync().Result.AccessToken;
+                    token = pca.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync().Result.AccessToken;
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                     await Task.FromResult(0);
-                });
-                await graphClient.Me.Drive.Request().GetAsync();
+                }); */
+                var driveItem = await graphClient.Me.Drive.GetAsync();
+                //await graphClient.Me.Drive.  Request().GetAsync();
             }
             catch
             {
@@ -83,12 +109,17 @@ namespace AntiTeleBot
                 var a = await GetATokenForGraphDeviceCode();
                 token = a.AccessToken;
                 log.LogInformation("NEW TOKEN: " + token);
+                var tokenProvider = new TokenProvider();
+                tokenProvider.token = token;
+                var authenticationProvider = new BaseBearerTokenAuthenticationProvider(tokenProvider);
+                graphClient = new GraphServiceClient(authenticationProvider);
+
             }
-            graphClient.AuthenticationProvider = new DelegateAuthenticationProvider(async (request) =>
+            /* graphClient.AuthenticationProvider = new DelegateAuthenticationProvider(async (request) =>
             {
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 await Task.FromResult<object>(null);
-            });
+            }); */
             var t = Regex.Split(recordingUrl, "/");
             log.LogInformation(recordingUrl);
             var filename = caller.Replace("+", "") + "_" + DateTime.Now.ToString("s").Replace(":", ".") + ".mp3";
@@ -96,36 +127,38 @@ namespace AntiTeleBot
             var hresponse = await h.GetAsync(recordingUrl);
             Stream streamToReadFrom = await hresponse.Content.ReadAsStreamAsync();
 
-            var drive = await graphClient.Me.Drive.Request().GetAsync();
-            var items = await graphClient.Me.Drive.Root.Children.Request().GetAsync();
-            var folder = items.Where(f => f.Name.ToLower() == FolderName.ToLower()).FirstOrDefault();
+            var drive = await graphClient.Me.Drive.GetAsync();
+            //var drive = await graphClient.Me.Drive.Request().GetAsync();
+            var items = await graphClient.Drives[drive.Id].Items["root"].Children.GetAsync();
+            var folder = items.Value.Where(f => f.Name.ToLower() == FolderName.ToLower()).FirstOrDefault();
             if (folder == null)
             {
-                var driveItem = new DriveItem
+                var driveItem = new Microsoft.Graph.Models.DriveItem
                 {
                     Name = FolderName,
-                    Folder = new Folder
+                    Folder = new Microsoft.Graph.Models.Folder
                     {
                     }
                 };
-                await graphClient.Me.Drive.Root.Children.Request().AddAsync(driveItem);
-                items = await graphClient.Me.Drive.Root.Children.Request().GetAsync();
-                folder = items.Where(f => f.Name.ToLower() == FolderName.ToLower()).FirstOrDefault();
+                folder = items.Value.Where(f => f.Name.ToLower() == FolderName.ToLower()).FirstOrDefault();
+                folder.Children.Add(driveItem);
+                items = await graphClient.Drives[drive.Id].Items["root"].Children.GetAsync();
+                folder = items.Value.Where(f => f.Name.ToLower() == FolderName.ToLower()).FirstOrDefault();
             }
             //using var stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(@"The contents of the file goes here."));
             //var stream = new System.IO.FileStream(@"C:\_MY_DATA_\GIT_REPOS\a.json", System.IO.FileMode.Open);
-            await graphClient.Me.Drive.Items[folder.Id].ItemWithPath(filename).Content.Request().PutAsync<DriveItem>(streamToReadFrom);
-             log.LogInformation($"log location: {LogFullFileName}");
-            string newlogfilename = filename.Replace(".mp3",".txt");
-            Stream streamLogFile  = System.IO.File.OpenRead(LogFullFileName);
+            await graphClient.Drives[drive.Id].Items[folder.Id].ItemWithPath(filename).Content.PutAsync(streamToReadFrom);
+            log.LogInformation($"log location: {LogFullFileName}");
+            string newlogfilename = filename.Replace(".mp3", ".txt");
+            Stream streamLogFile = System.IO.File.OpenRead(LogFullFileName);
             //System.IO.File.Move(LogFullFileName,@$"{System.IO.Path.GetTempPath()}\{newlogfilename}" );
-            
-            await graphClient.Me.Drive.Items[folder.Id].ItemWithPath(newlogfilename).Content.Request().PutAsync<DriveItem>(streamLogFile);
+
+            await graphClient.Drives[drive.Id].Items[folder.Id].ItemWithPath(newlogfilename).Content.PutAsync(streamLogFile);
             if (System.Environment.GetEnvironmentVariable("PushOverUserId") != "")
-                    {
-                        PushOverSender.SendPushMessage(System.Environment.GetEnvironmentVariable("PushOverUserId"),
-                            System.Environment.GetEnvironmentVariable("PushOverAppTokenId"), "AntiTeleBot", "Nowe nagranie na OneDrive od "+caller);
-                    }
+            {
+                PushOverSender.SendPushMessage(System.Environment.GetEnvironmentVariable("PushOverUserId"),
+                    System.Environment.GetEnvironmentVariable("PushOverAppTokenId"), "AntiTeleBot", "Nowe nagranie na OneDrive od " + caller);
+            }
         }
     }
 }
