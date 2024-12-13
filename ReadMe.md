@@ -29,5 +29,10 @@ W przypadku wdrożenia w Azure Functions, dodaj te wpisy w sekcji Configuration 
 
 Może też przydać się ngrok (https://ngrok.com/) . Łatwa i darmowa metoda na bezpieczny tuner dający dostęp z świata w czasie uruchomienia ngroka, na jeden port na naszym komputerze .
 
-Do tego wszystkiego .NET SDK 3.1 LTS (Naudio nie działa na .Net 5 póki co). Powodzenia!
+Do tego wszystkiego .NET SDK 8.
+
+12go grudnia 2024 projekt został zreanimowany / zmigrowany z AzureFunctions v3 do v4 oraz z .net3 do .net8.
+Development rozwiazania, w moim przypadku, opiera się do Visual Studio Code z projektem w kontenerze: https://code.visualstudio.com/docs/devcontainers/containers . Obecnie pliki zakładają development na platfromie arm64 ; w przypadku innej architektury sprawdź pliki w katalogu .devcontainer i, stosowanie, popraw architekturę na amd64.
+
+Powodzenia!
 Mile widziane PR.
